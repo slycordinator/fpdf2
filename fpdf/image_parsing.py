@@ -233,7 +233,7 @@ def load_image(filename: str | Path | BinaryIO) -> BinaryIO:
             return BytesIO(url_file.read())
     elif filename.startswith("data:"):
         return _decode_base64_image(filename)
-    with open(filename, "rb") as local_file:
+    with Path(filename).open("rb") as local_file:
         return BytesIO(local_file.read())
 
 
