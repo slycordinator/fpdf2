@@ -135,7 +135,7 @@ def preload_image(
         and an instance of a subclass of `ImageInfo`.
     """
     # Identify and load SVG data:
-    if isinstance(name, (str, Path)) and str(name).endswith(".svg"):
+    if isinstance(name, (str, Path)) and Path(name).suffix.lower() == ".svg":
         try:
             return get_svg_info(
                 str(name), load_image(str(name)), image_cache=image_cache
