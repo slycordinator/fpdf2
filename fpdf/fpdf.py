@@ -5739,7 +5739,7 @@ class FPDF(GraphicsStateMixin, TextRegionMixin):
             raise EnvironmentError(
                 "endesive.signer not available - PDF cannot be signed - Try: pip install endesive"
             )
-        with open(pkcs_filepath, "rb") as pkcs_file:
+        with Path(pkcs_filepath).open("rb") as pkcs_file:
             key, cert, extra_certs = (
                 pkcs12.load_key_and_certificates(  # pyright: ignore[reportOptionalMemberAccess]
                     pkcs_file.read(), password
