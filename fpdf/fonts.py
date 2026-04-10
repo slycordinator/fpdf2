@@ -363,8 +363,8 @@ class TTFFont:
     ):
         self.i = len(fpdf.fonts) + 1
         self.type = "TTF"
-        self.ttffile = font_file_path
-        self.is_compressed = str(self.ttffile).lower().endswith((".woff", ".woff2"))
+        self.ttffile = Path(font_file_path)
+        self.is_compressed = self.ttffile.suffix.lower() in (".woff", ".woff2")
         self._hbfont: Optional["HarfBuzzFont"] = None
         self.fontkey = fontkey
         self.biggest_size_pt: float = 0
@@ -387,8 +387,7 @@ class TTFFont:
             # raises an ImportError/RuntimeError during parsing. Provide a clearer hint
             # only for that specific situation. Allow other exceptions (e.g. FileNotFoundError,
             # OSError, parsing errors) to propagate normally so they aren't masked here.
-            fname_str = str(self.ttffile).lower()
-            if fname_str.endswith(".woff2"):
+            if self.ttffile.suffix.lower() == ".woff2":
                 raise RuntimeError(
                     "Could not open WOFF2 font. WOFF2 support requires an external Brotli "
                     "library (install 'brotli' or 'brotlicffi'). Original error: "
