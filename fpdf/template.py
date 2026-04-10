@@ -11,7 +11,7 @@ __license__ = "LGPL 3.0"
 import csv
 import json
 import locale
-import os
+from os import PathLike
 import warnings
 from typing import Any, Optional, Sequence
 
@@ -173,7 +173,7 @@ class FlexTemplate:
             return False
         return None
 
-    def parse_json(self, infile: os.PathLike[str], encoding: str = "utf-8") -> None:
+    def parse_json(self, infile: PathLike[str], encoding: str = "utf-8") -> None:
         """
         Load the template definition from a JSON file.
         The data must be structured as an array of objects, with names and values exactly
@@ -206,7 +206,7 @@ class FlexTemplate:
 
     def parse_csv(
         self,
-        infile: os.PathLike[str],
+        infile: PathLike[str],
         delimiter: str = ",",
         decimal_sep: str = ".",
         encoding: Optional[str] = None,
@@ -736,7 +736,7 @@ class Template(FlexTemplate):
     # pylint: disable=redefined-builtin
     def __init__(
         self,
-        infile: Optional[os.PathLike[str]] = None,
+        infile: Optional[PathLike[str]] = None,
         elements: Optional[Sequence[dict[str, Any]]] = None,
         format: str = "A4",
         orientation: str = "portrait",
