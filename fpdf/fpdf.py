@@ -9,7 +9,7 @@
 # * Maintainer:  Lucas Cimon et al since 2021 est.                           *
 # ****************************************************************************
 import hashlib
-import io
+from io import BytesIO
 import logging
 import math
 import mimetypes
@@ -1456,7 +1456,7 @@ class FPDF(GraphicsStateMixin, TextRegionMixin):
         """
 
         if isinstance(
-            background, (str, io.BytesIO, Image, DeviceRGB, tuple, type(None))
+            background, (str, BytesIO, Image, DeviceRGB, tuple, type(None))
         ):
             if isinstance(background, DeviceRGB):
                 self.page_background = background.colors255
