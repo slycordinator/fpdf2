@@ -17,7 +17,7 @@ import stringprep
 import unicodedata
 from binascii import hexlify
 from codecs import BOM_UTF16_BE
-from os import urandom
+from secrets import token_bytes
 from typing import TYPE_CHECKING, Callable, Iterator, Optional, Sequence, Type, Union
 
 from .enums import AccessPermission, EncryptionMethod
@@ -289,11 +289,11 @@ class StandardSecurityHandler:
     @classmethod
     def get_random_bytes(cls: Type["StandardSecurityHandler"], size: int) -> bytes:
         """
-        https://docs.python.org/3/library/os.html#os.urandom
-        os.urandom will use OS-specific sources to generate random bytes
+        https://docs.python.org/3/library/secrets.html#secrets.token_bytes
+        secrets.token_bytes will use the most secure source of randomness available on the system to generate random bytes
         suitable for cryptographic use
         """
-        return urandom(size)
+        return token_bytes(size)
 
     @classmethod
     def prepare_string(cls: Type["StandardSecurityHandler"], string: str) -> bytes:
