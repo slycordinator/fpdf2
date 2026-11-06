@@ -8,11 +8,12 @@ in non-backward-compatible ways.
 
 import contextlib
 import inspect
-import os.path
 import warnings
+from collections.abc import Callable, Iterable
 from functools import wraps
+from pathlib import Path
 from types import ModuleType
-from typing import Any, Callable, Iterable, ParamSpec, TypeVar
+from typing import Any, ParamSpec, TypeVar
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -106,14 +107,14 @@ def get_stack_level() -> int:
     # pylint: disable=import-outside-toplevel
     import fpdf  # pylint: disable=cyclic-import
 
-    pkg_dir = os.path.dirname(fpdf.__file__)
-    contextlib_dir = os.path.dirname(contextlib.__file__)
+    pkg_dir = Path(fpdf.__file__).parent
+    contextlib_dir = Path(contextlib.__file__).parent
 
     frame = inspect.currentframe()
     n = 0
     while frame is not None:
-        fname = inspect.getfile(frame)
-        if fname.startswith(pkg_dir) or fname.startswith(contextlib_dir):
+        fpath = Path(inspect.getfile(frame)).resolve()
+        if pkg_dir.resolve() in fpath.parents or contextlib_dir.resolve() in fpath.parents:
             frame = frame.f_back
             n += 1
         else:
