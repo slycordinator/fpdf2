@@ -9,11 +9,11 @@
 # * Maintainer:  Lucas Cimon et al since 2021 est.                           *
 # ****************************************************************************
 import hashlib
-import io
+from io import BytesIO
 import logging
 import math
 import mimetypes
-import os
+from os import PathLike
 import re
 import sys
 import types
@@ -22,7 +22,6 @@ from collections import defaultdict
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from functools import wraps
-from os.path import splitext
 from pathlib import Path, PurePath
 from typing import (
     TYPE_CHECKING,
@@ -1567,7 +1566,7 @@ class FPDF(GraphicsStateMixin, TextRegionMixin):
         """
 
         if isinstance(
-            background, (str, io.BytesIO, Image, DeviceRGB, tuple, type(None))
+            background, (str, BytesIO, Image, DeviceRGB, tuple, type(None))
         ):
             if isinstance(background, DeviceRGB):
                 self.page_background = background.colors255
@@ -2710,7 +2709,7 @@ class FPDF(GraphicsStateMixin, TextRegionMixin):
         if not fname:
             raise ValueError('"fname" parameter is required')
 
-        ext = splitext(str(fname))[1].lower()
+        ext = Path(fname).suffix.lower()
         if ext not in (".otb", ".otf", ".otc", ".ttf", ".ttc", ".woff", ".woff2"):
             raise ValueError(
                 f"Unsupported font file extension: {ext}."
@@ -6365,7 +6364,7 @@ class FPDF(GraphicsStateMixin, TextRegionMixin):
             raise EnvironmentError(
                 "endesive.signer not available - PDF cannot be signed - Try: pip install endesive"
             )
-        with open(pkcs_filepath, "rb") as pkcs_file:
+        with Path(pkcs_filepath).open("rb") as pkcs_file:
             key, cert, extra_certs = (
                 pkcs12.load_key_and_certificates(  # pyright: ignore[reportOptionalMemberAccess]
                     pkcs_file.read(), password
@@ -7119,7 +7118,7 @@ class FPDF(GraphicsStateMixin, TextRegionMixin):
     @overload
     def output(
         self,
-        name: str | os.PathLike[str] | BinaryIO,
+        name: str | PathLike[str] | BinaryIO,
         *,
         linearize: bool = False,
         output_producer_class: type[OutputProducer] = OutputProducer,
@@ -7127,7 +7126,7 @@ class FPDF(GraphicsStateMixin, TextRegionMixin):
     @deprecated_parameter([("dest", "2.2.0")])
     def output(
         self,
-        name: Optional[str | os.PathLike[str] | BinaryIO] = "",
+        name: Optional[str | PathLike[str] | BinaryIO] = "",
         *,
         linearize: bool = False,
         output_producer_class: type[OutputProducer] = OutputProducer,
@@ -7196,7 +7195,7 @@ class FPDF(GraphicsStateMixin, TextRegionMixin):
             output_producer = output_producer_class(self)
             self.buffer = output_producer.bufferize()
         if name:
-            if isinstance(name, (str, os.PathLike)):
+            if isinstance(name, (str, PathLike)):
                 Path(name).write_bytes(self.buffer)
             else:
                 name.write(self.buffer)
