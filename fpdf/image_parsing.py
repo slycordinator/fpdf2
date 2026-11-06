@@ -387,7 +387,7 @@ def preload_image(
                 "Local file access is disabled by resource_access_policy: " f"{name!r}"
             )
         name = str(name)
-        if not name.endswith(".svg"):
+        if not name.lower().endswith(".svg"):
             info = image_cache.images.get(name)
             if info is not None:
                 info["usages"] = info["usages"] + 1  # type: ignore[operator]
@@ -396,7 +396,7 @@ def preload_image(
         _validate_resource_access(name, resource_access_policy)
 
     # Identify and load SVG data:
-    if isinstance(name, str) and name.endswith(".svg"):
+    if isinstance(name, str) and name.lower().endswith(".svg"):
         try:
             return get_svg_info(
                 name,
@@ -528,7 +528,7 @@ def load_image(
     elif filename.startswith("data:"):
         return _decode_base64_image(filename)
     _validate_resource_access(filename, resource_access_policy)
-    with open(filename, "rb") as local_file:
+    with Path(filename).open("rb") as local_file:
         return BytesIO(local_file.read())
 
 
